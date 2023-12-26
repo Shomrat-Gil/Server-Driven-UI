@@ -4,6 +4,102 @@
 
 Server-Driven UI (SDUI) is an architectural approach that allows the server to dictate the structure and content of the user interface on the client side. Instead of hardcoding UI elements on the client, SDUI relies on a server to send the necessary components, layouts, and configurations dynamically to the client application. This approach offers flexibility, reduced client-side logic, and easier maintenance.
 
+## Create Components
+
+You can create your own components by extending `AbstractComponentClass`. Below are examples illustrating how to use the SDUI library:
+
+## Usage
+
+### Example 1:
+
+```php
+$sdui = SdUI::make()
+    ->add(HeadingComponent::make()
+        ->setTitle(TextStyleCard::make()->setValue('Main Heading'))
+        ->setSubTitle(TextStyleCard::make()->setValue('Main Heading Subtitle')))
+    ->append(HeadingComponent::make()->setTitle(TextStyleCard::make()->setValue('Item Heading')))
+    ->append(LabelComponent::make()
+        ->setTitle(TextStyleCard::make()->setValue('Hello World')->setBold(true))
+        ->setStyle(['color' => '#000']))
+    ->append(
+        SdUI::make('banner')
+            ->append(LabelComponent::make()->setTitle(TextStyleCard::make()->setValue('Nested Lable')->setItalic(true)))
+            ->append(LabelComponent::make()->setTitle(TextStyleCard::make()->setValue('Another Nested Label')->setBold(true)))
+    )
+    ->render();
+
+print_r($sdui);
+```
+### Example 2:
+
+```php
+$sdui = SdUI::make()
+    ->setCurrentPageFetch('/api/boo/123')
+    ->add(HeadingComponent::make()->setTitle(TextStyleCard::make()->setValue('Main Heading'))->setSubTitle(TextStyleCard::make()->setValue('Main Heading Subtitle')))
+    ->append(HeadingComponent::make()->setTitle(TextStyleCard::make()->setValue('Item Heading')), 'group1')
+    ->append(LabelComponent::make()->setTitle(TextStyleCard::make()->setValue('Hello')), 'group1')
+    ->append(
+        SdUI::make()
+            ->append(LabelComponent::make()->setTitle(TextStyleCard::make()->setValue('Nested Lable')->setItalic(true)), 'group2')
+            ->append(LabelComponent::make()->setTitle(TextStyleCard::make()->setValue('Another Nested Lable')->setItalic(true)), 'group2')
+    )
+    ->append(
+        InputFormComponent::make()
+            ->setName('username')
+            ->setLabel('Username')
+            ->setType('text')
+            ->setValidation('required') // Validates for non-empty
+    )
+    ->append(
+        DropdownComponent::make()
+            ->setName('country')
+            ->setLabel('Select Country')
+            ->addOption('US', 'United States')
+            ->addOption('UK', 'United Kingdom')
+            ->addOption('IN', 'India')
+            ->setSelectedValue('US')
+    )
+    ->append(
+        DropdownComponent::make()
+            ->setName('language')
+            ->setLabel('Choose Language')
+            ->addOption('en', 'English')
+            ->addOption('es', 'Spanish')
+            ->addOption('fr', 'French')
+    )
+    ->appendAction(
+        ActionCard::make()
+            ->setLabel(TextStyleCard::make()->setValue('Back')->setColor('#000000')->setBackgroundColor('#888888'))
+            ->setNavigationKey('BOO', 123)
+            ->setStyleOutline()
+    )
+    ->appendAction(
+        ActionCard::make()
+            ->setLabel(TextStyleCard::make()->setValue('Save')->setColor('#000000')->setBackgroundColor('#888888'))
+            ->setNavigationKey('FOO', 123)
+            ->setSubmitForm('/api/foo')
+            ->setSubmitConfirmationMessage('Are you sure?')
+            ->setStyleOutline()
+    )
+    ->setPayload('stripe_account', 'xyz098')
+    ->render();
+// Output the rendered UI as an array
+print_r($sdui);
+``` 
+
+### Example 3:
+
+```php
+$sdui = SdUI::make()
+    ->addRow()  // Grouping key 'row1'
+    ->appendColumn(HeadingComponent::make()->setTitle(TextStyleCard::make()->setValue('Column 1')))
+    ->appendColumn(LabelComponent::make()->setTitle(TextStyleCard::make()->setValue('Label 1')))
+    ->addRow()  // Grouping key 'row2'
+    ->appendColumn(LabelComponent::make()->setTitle(TextStyleCard::make()->setValue('Label 2')))
+    ->render();
+
+print_r($sdui);
+```
 ## Key Features
 
 1. **Dynamic Content Delivery**: The server determines what content to display and how it should be presented, allowing for real-time changes without requiring client-side updates.
